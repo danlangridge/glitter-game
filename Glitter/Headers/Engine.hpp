@@ -19,6 +19,4 @@ namespace Gravel {
             GLFWwindow* mWindow;
             GLuint uniforms;
     };
-
-
 }

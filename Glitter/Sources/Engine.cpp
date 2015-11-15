@@ -46,14 +46,6 @@ int uploadTestMesh() {
         // Load GLFW and Create a Window
         glfwInit();
 
-        /*
-           glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
-           glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 0);
-           glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-           glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
-           glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
-           */ 
-
         mWindow = glfwCreateWindow(mWidth, mHeight, "OpenGL", nullptr, nullptr);
 
         // Check for Valid Context
@@ -68,7 +60,7 @@ int uploadTestMesh() {
         fprintf(stderr, "OpenGL %s\nGLSL %s\n", glGetString(GL_VERSION), glGetString(GL_SHADING_LANGUAGE_VERSION));
 
         uploadTestMesh();    
-        generateProgram(); 
+        setupShaders(); 
     }
 
     void Engine::mainLoop() {
@@ -80,7 +72,6 @@ int uploadTestMesh() {
             glClearColor(0.25f, 0.25f, 0.25f, 1.0f);
             glClear(GL_COLOR_BUFFER_BIT);
 
-
             glDrawArrays(GL_TRIANGLES, 0, 3);
 
             // Flip Buffers and Draw
@@ -90,56 +81,12 @@ int uploadTestMesh() {
     }
 
 
-    void Engine::generateProgram() {
+    void Engine::setupShaders() {
 
-        const GLchar* vertexSourceFile = "/home/dan/workspace/glitter/Glitter/Glitter/Sources/shader.vert";
-        GLuint vertexShader = glCreateShader(GL_VERTEX_SHADER);
-        glShaderSource(vertexShader, 1, &vertexSource, NULL);
-        glCompileShader(vertexShader); 
+        std::string vertexSourceFile = "/home/dan/workspace/glitter-game/Glitter/Shaders/shader.vert";
+        std::string fragmentSourceFile = "/home/dan/workspace/glitter-game/Glitter/Shaders/shader.frag";
 
-        const GLchar* fragmentSourceFile = "/home/workspace/glitter/Glitter/Glitter/Sources/fragment.vert";
-        GLuint fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
-        glShaderSource(fragmentShader, 1, &fragmentSource, NULL);
-        glCompileShader(fragmentShader);
-
-        //TODO: get errors in case of failed compilation
-        std::printf("shaders uploaded\n");
-
-        GLint status;
-        glGetShaderiv(vertexShader, GL_COMPILE_STATUS, &status);
-        if (status) {
-            std::printf("Vertex Shader compiled successfully\n"); 
-        } else {
-            char buffer[512];
-            glGetShaderInfoLog(vertexShader, 512, NULL, buffer); 
-            std::printf("Vertex Shader failed compilation: %s", buffer);
-        }
-
-        glGetShaderiv(fragmentShader, GL_COMPILE_STATUS, &status);
-        if (status) {
-            std::printf("Fragment Shader compiled successfully\n"); 
-        } else {
-            char buffer[512];
-            glGetShaderInfoLog(fragmentShader, 512, NULL, buffer); 
-            std::printf("Fragment Shader failed compilation: %s", buffer);
-        }
-
-        GLuint shaderProgram = glCreateProgram();
-        glAttachShader( shaderProgram, vertexShader);
-        glAttachShader( shaderProgram, fragmentShader);
-
-        glBindFragDataLocation(shaderProgram, 0, "outColor");
-
-        //Link shaders to eachother
-        glLinkProgram(shaderProgram);
-
-        //Activate program
-        glUseProgram(shaderProgram);
-
-        //attach to gl_Position
-        GLint posAttrib = glGetAttribLocation(shaderProgram, "position");
-        glEnableVertexAttribArray(posAttrib);
-        glVertexAttribPointer(posAttrib, 2, GL_FLOAT, GL_FALSE, 0, 0);
+        shader = new Shader(vertexSourceFile, fragmentSourceFile);
     }
 
 }

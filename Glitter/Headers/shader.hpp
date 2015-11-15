@@ -12,7 +12,9 @@ class Shader {
         ~Shader() {glDeleteProgram(mProgram);}
 
         void get(std::string filename);
-        void attach(GLuint shader, GLenum type);
+        void attach(std::string shader, GLenum type);
+        void setupBinds();
+        void setupAttributes();
         GLuint retrieve(std::string filename);
 
     private:

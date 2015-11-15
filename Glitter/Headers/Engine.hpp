@@ -3,6 +3,7 @@
 #include "glitter.hpp"
 #include <GLFW/glfw3.h>
 
+#include "shader.hpp"
 
 namespace Gravel {
 
@@ -13,9 +14,9 @@ namespace Gravel {
             void mainLoop();
 
         private:
-            void generateProgram();
+            void setupShaders();
 
-            GLuint shaderProgram;
+            Shader* shader;
             GLFWwindow* mWindow;
             GLuint uniforms;
     };

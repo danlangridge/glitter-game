@@ -1,46 +1,49 @@
-#include "Engine.hpp"
+#include "engine.hpp"
 #include "glitter.hpp"
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
+
 
 // Standard Headers
 #include <cstdio>
 #include <cstdlib>
+#include <chrono>
+#include <ctime>
 
 #include <string>
 
 namespace Gravel
 {
 
-    const GLchar* vertexSource = "#version 130\nin vec2 position;void main(){gl_Position = vec4(position, 0.0, 1.0);}";
-    const GLchar* fragmentSource = "#version 130\nuniform vec3 triangleColor;out vec4 outColor;void main(){outColor = vec4(triangleColor, 1.0);}";
+    int uploadTestMesh() {
+        GLuint vao;
+        glGenVertexArrays(1, &vao);
 
-int uploadTestMesh() {
-    GLuint vao;
-    glGenVertexArrays(1, &vao);
+        glBindVertexArray(vao);
 
-    glBindVertexArray(vao);
+        //Vertex Data 
+        float vertices[] = {
+            0.0f, 0.5f,
+            0.5f, -0.5f,
+            -0.5f, -0.5f
+        };
 
-    //Vertex Data 
-    float vertices[] = {
-        0.0f, 0.5f,
-        0.5f, -0.5f,
-        -0.5f, -0.5f
-    };
+        //Grab memory using opengl (vertex Buffer Object)
+        GLuint vbo;
+        glGenBuffers(1, &vbo);
 
-    //Grab memory using opengl (vertex Buffer Object)
-    GLuint vbo;
-    glGenBuffers(1, &vbo);
+        //Tie memory to active datatype 
+        glBindBuffer(GL_ARRAY_BUFFER, vbo);
 
-    //Tie memory to active datatype 
-    glBindBuffer(GL_ARRAY_BUFFER, vbo);
+        //Upload data
+        glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 
-    //Upload data
-    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-
-    return 0;
-}
+        return 0;
+    }
 
     Engine::Engine() {
         // Load GLFW and Create a Window
@@ -59,11 +62,14 @@ int uploadTestMesh() {
         gladLoadGL();
         fprintf(stderr, "OpenGL %s\nGLSL %s\n", glGetString(GL_VERSION), glGetString(GL_SHADING_LANGUAGE_VERSION));
 
-        uploadTestMesh();    
+        uploadTestMesh();
         setupShaders(); 
     }
 
     void Engine::mainLoop() {
+
+        auto t_start = std::chrono::high_resolution_clock::now();
+        
         while (glfwWindowShouldClose(mWindow) == false) {
             if (glfwGetKey(mWindow, GLFW_KEY_ESCAPE) == GLFW_PRESS)
                 glfwSetWindowShouldClose(mWindow, true);
@@ -72,6 +78,21 @@ int uploadTestMesh() {
             glClearColor(0.25f, 0.25f, 0.25f, 1.0f);
             glClear(GL_COLOR_BUFFER_BIT);
 
+            auto t_now = std::chrono::high_resolution_clock::now();
+            float time = std::chrono::duration_cast<std::chrono::duration<float>>(t_now - t_start).count();
+            
+            glm::mat4 trans;
+            trans = glm::rotate(
+                    trans,
+                    time * glm::radians(180.0f), 
+                    glm::vec3(0.0f, 0.0f, 1.0f)
+                    );
+
+            glm::vec4 result = trans * glm::vec4(1.0f, 0.0f, 0.0f, 1.0f);
+            printf("%f, %f, %f,\n", result.x, result.y, result.z);
+            
+            shader->bind("trans", trans);
+             
             glDrawArrays(GL_TRIANGLES, 0, 3);
 
             // Flip Buffers and Draw

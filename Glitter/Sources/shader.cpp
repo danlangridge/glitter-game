@@ -7,7 +7,7 @@ Shader::Shader(std::string vertexShader, std::string fragmentShader) {
     mProgram = glCreateProgram();
     get(fragmentShader);
     get(vertexShader);
-    setupBinds();
+    setupBinds(); 
     glLinkProgram(mProgram);
     glUseProgram(mProgram);
     setupAttributes();
@@ -72,6 +72,11 @@ void Shader::attach(std::string shader, GLenum type) {
     glAttachShader( mProgram, shaderAddress);
 }
 
+void Shader::bind(unsigned int location, glm::mat4 const & matrix) {
+    
+    glUniformMatrix4fv(location, 1, GL_FALSE, glm::value_ptr(matrix)); 
+}
+
 void Shader::setupBinds() {
     glBindFragDataLocation(mProgram, 0, "outColor");
 }
@@ -81,6 +86,7 @@ void Shader::setupAttributes() {
         GLint posAttrib = glGetAttribLocation(mProgram, "position");
         glEnableVertexAttribArray(posAttrib);
         glVertexAttribPointer(posAttrib, 2, GL_FLOAT, GL_FALSE, 0, 0);
+
 }
 
 GLuint Shader::retrieve(std::string filename) {

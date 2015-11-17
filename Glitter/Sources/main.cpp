@@ -1,6 +1,6 @@
 // Local Headers
 #include "glitter.hpp"
-#include "Engine.hpp"
+#include "engine.hpp"
 
 // System Headers
 #include <glad/glad.h>

@@ -26,11 +26,56 @@ namespace Gravel
         glBindVertexArray(vao);
 
         //Vertex Data 
-        float vertices[] = {
+        float triangle[] = {
             0.0f, 0.5f,
             0.5f, -0.5f,
             -0.5f, -0.5f
         };
+
+        float box[] = {
+            -0.5f, -0.5f, -0.5f,
+            0.5f, -0.5f, -0.5f,
+            0.5f, 0.5f, -0.5f,
+            0.5f, 0.5f, -0.5f,
+            -0.5f, 0.5f, -0.5f,
+            -0.5f, -0.5f, -0.5f,
+
+            -0.5f, -0.5f, 0.5f,
+            0.5f, -0.5f, 0.5f,
+            0.5f, 0.5f, 0.5f,
+            0.5f, 0.5f, 0.5f,
+            -0.5f, 0.5f, 0.5f,
+            -0.5f, -0.5f, 0.5f,
+
+            -0.5f, 0.5f, 0.5f,
+            -0.5f, 0.5f, -0.5f,
+            -0.5f, -0.5f, -0.5f,
+            -0.5f, -0.5f, -0.5f,
+            -0.5f, -0.5f, 0.5f,
+            -0.5f, 0.5f, 0.5f,
+
+            0.5f, 0.5f, 0.5f,
+            0.5f, 0.5f, -0.5f,
+            0.5f, -0.5f, -0.5f,
+            0.5f, -0.5f, -0.5f,
+            0.5f, -0.5f, 0.5f,
+            0.5f, 0.5f, 0.5f,
+
+            -0.5f, -0.5f, -0.5f,
+            0.5f, -0.5f, -0.5f,
+            0.5f, -0.5f, 0.5f,
+            0.5f, -0.5f, 0.5f,
+            -0.5f, -0.5f, 0.5f,
+            -0.5f, -0.5f, -0.5f,
+
+            -0.5f, 0.5f, -0.5f,
+            0.5f, 0.5f, -0.5f,
+            0.5f, 0.5f, 0.5f,
+            0.5f, 0.5f, 0.5f,
+            -0.5f, 0.5f, 0.5f,
+            -0.5f, 0.5f, -0.5f
+        };
+
 
         //Grab memory using opengl (vertex Buffer Object)
         GLuint vbo;
@@ -40,7 +85,7 @@ namespace Gravel
         glBindBuffer(GL_ARRAY_BUFFER, vbo);
 
         //Upload data
-        glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+        glBufferData(GL_ARRAY_BUFFER, sizeof(box), box, GL_STATIC_DRAW);
 
         return 0;
     }
@@ -61,6 +106,7 @@ namespace Gravel
         glfwMakeContextCurrent(mWindow);
         gladLoadGL();
         fprintf(stderr, "OpenGL %s\nGLSL %s\n", glGetString(GL_VERSION), glGetString(GL_SHADING_LANGUAGE_VERSION));
+        glEnable(GL_DEPTH_TEST);
 
         uploadTestMesh();
         setupShaders(); 
@@ -86,7 +132,7 @@ namespace Gravel
 
             // Background Fill Color
             glClearColor(0.25f, 0.25f, 0.25f, 1.0f);
-            glClear(GL_COLOR_BUFFER_BIT);
+            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
             auto t_now = std::chrono::high_resolution_clock::now();
             float time = std::chrono::duration_cast<std::chrono::duration<float>>(t_now - t_start).count();
@@ -103,7 +149,7 @@ namespace Gravel
             
             shader->bind("model", model);
              
-            glDrawArrays(GL_TRIANGLES, 0, 3);
+            glDrawArrays(GL_TRIANGLES, 0, 36);
 
             // Flip Buffers and Draw
             glfwSwapBuffers(mWindow);

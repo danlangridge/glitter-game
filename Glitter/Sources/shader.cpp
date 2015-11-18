@@ -85,7 +85,7 @@ void Shader::setupAttributes() {
 
         GLint posAttrib = glGetAttribLocation(mProgram, "position");
         glEnableVertexAttribArray(posAttrib);
-        glVertexAttribPointer(posAttrib, 2, GL_FLOAT, GL_FALSE, 0, 0);
+        glVertexAttribPointer(posAttrib, 3, GL_FLOAT, GL_FALSE, 0, 0);
 
 }
 

@@ -18,8 +18,15 @@
 
 namespace Gravel
 {
+    float* loadMeshFile() {
+        Mesh box = Mesh("/home/dan/workspace/glitter-game/models/box.obj");
+       return box.getVertices();
+    }
+
 
     int uploadTestMesh() {
+        float* boxVerts = loadMeshFile();
+
         GLuint vao;
         glGenVertexArrays(1, &vao);
 
@@ -85,7 +92,7 @@ namespace Gravel
         glBindBuffer(GL_ARRAY_BUFFER, vbo);
 
         //Upload data
-        glBufferData(GL_ARRAY_BUFFER, sizeof(box), box, GL_STATIC_DRAW);
+        glBufferData(GL_ARRAY_BUFFER, 36*3*sizeof(float), boxVerts, GL_STATIC_DRAW);
 
         return 0;
     }
@@ -144,8 +151,8 @@ namespace Gravel
                     glm::vec3(0.0f, 0.0f, 1.0f)
                     );
 
-            glm::vec4 result = model * glm::vec4(1.0f, 0.0f, 0.0f, 1.0f);
-            printf("%f, %f, %f,\n", result.x, result.y, result.z);
+            //glm::vec4 result = model * glm::vec4(1.0f, 0.0f, 0.0f, 1.0f);
+            //printf("%f, %f, %f,\n", result.x, result.y, result.z);
             
             shader->bind("model", model);
              

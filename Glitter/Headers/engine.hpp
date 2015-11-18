@@ -4,6 +4,7 @@
 #include <GLFW/glfw3.h>
 
 #include "shader.hpp"
+#include "mesh.hpp"
 
 namespace Gravel {
 

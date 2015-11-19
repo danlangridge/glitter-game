@@ -18,14 +18,11 @@
 
 namespace Gravel
 {
-    float* loadMeshFile() {
-        Mesh box = Mesh("/home/dan/workspace/glitter-game/models/box.obj");
-       return box.getVertices();
-    }
 
 
     int uploadTestMesh() {
-        float* boxVerts = loadMeshFile();
+
+        Mesh box = Mesh("/home/dan/workspace/glitter-game/models/box.obj");
 
         GLuint vao;
         glGenVertexArrays(1, &vao);
@@ -39,51 +36,6 @@ namespace Gravel
             -0.5f, -0.5f
         };
 
-        float box[] = {
-            -0.5f, -0.5f, -0.5f,
-            0.5f, -0.5f, -0.5f,
-            0.5f, 0.5f, -0.5f,
-            0.5f, 0.5f, -0.5f,
-            -0.5f, 0.5f, -0.5f,
-            -0.5f, -0.5f, -0.5f,
-
-            -0.5f, -0.5f, 0.5f,
-            0.5f, -0.5f, 0.5f,
-            0.5f, 0.5f, 0.5f,
-            0.5f, 0.5f, 0.5f,
-            -0.5f, 0.5f, 0.5f,
-            -0.5f, -0.5f, 0.5f,
-
-            -0.5f, 0.5f, 0.5f,
-            -0.5f, 0.5f, -0.5f,
-            -0.5f, -0.5f, -0.5f,
-            -0.5f, -0.5f, -0.5f,
-            -0.5f, -0.5f, 0.5f,
-            -0.5f, 0.5f, 0.5f,
-
-            0.5f, 0.5f, 0.5f,
-            0.5f, 0.5f, -0.5f,
-            0.5f, -0.5f, -0.5f,
-            0.5f, -0.5f, -0.5f,
-            0.5f, -0.5f, 0.5f,
-            0.5f, 0.5f, 0.5f,
-
-            -0.5f, -0.5f, -0.5f,
-            0.5f, -0.5f, -0.5f,
-            0.5f, -0.5f, 0.5f,
-            0.5f, -0.5f, 0.5f,
-            -0.5f, -0.5f, 0.5f,
-            -0.5f, -0.5f, -0.5f,
-
-            -0.5f, 0.5f, -0.5f,
-            0.5f, 0.5f, -0.5f,
-            0.5f, 0.5f, 0.5f,
-            0.5f, 0.5f, 0.5f,
-            -0.5f, 0.5f, 0.5f,
-            -0.5f, 0.5f, -0.5f
-        };
-
-
         //Grab memory using opengl (vertex Buffer Object)
         GLuint vbo;
         glGenBuffers(1, &vbo);
@@ -92,7 +44,7 @@ namespace Gravel
         glBindBuffer(GL_ARRAY_BUFFER, vbo);
 
         //Upload data
-        glBufferData(GL_ARRAY_BUFFER, 36*3*sizeof(float), boxVerts, GL_STATIC_DRAW);
+        glBufferData(GL_ARRAY_BUFFER, 36*3*sizeof(float), box.getVertices(), GL_STATIC_DRAW);
 
         return 0;
     }
@@ -149,7 +101,7 @@ namespace Gravel
                     model,
                     time * glm::radians(180.0f), 
                     glm::vec3(0.0f, 0.0f, 1.0f)
-                    );
+                    ) * glm::scale(model, glm::vec3(0.5f,0.5f,0.5f)) ;
 
             //glm::vec4 result = model * glm::vec4(1.0f, 0.0f, 0.0f, 1.0f);
             //printf("%f, %f, %f,\n", result.x, result.y, result.z);

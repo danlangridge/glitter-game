@@ -29,25 +29,12 @@ float* Mesh::getVertices() {
     float* faces = new float[numVertices*3];
     for (unsigned i = 0; i < numVertices; i++) {
         unsigned j = i*3;
-        faces[j] = vertices[i].x *.5f;
-        faces[j + 1] = vertices[i].y *.5f;
-        faces[j + 2] = vertices[i].z *.5f;
+        faces[j] = vertices[i].x;
+        faces[j + 1] = vertices[i].y;
+        faces[j + 2] = vertices[i].z;
          printf("x: %f, y: %f, z: %f\n", vertices[i].x, vertices[i].y, vertices[i].z);
     }
-
-    unsigned int numFaces = mesh->mNumFaces;
-
-    aiFace * meshFaces = mesh->mFaces;
     
-
-    /*
-   for (unsigned i = 0; i < numFaces*3; i = i + 3) {
-       faces[i] = vertices[meshFaces[i].mIndices[0]].x;
-       faces[i + 1] = vertices[meshFaces[i].mIndices[0]].y;
-       faces[i + 2] = vertices[meshFaces[i].mIndices[0]].z;
-        printf("x: %f, y: %f, z: %f\n", faces[i], faces[i + 1], faces[i + 2]);
-   
-   }*/ 
     return faces; 
 }
 

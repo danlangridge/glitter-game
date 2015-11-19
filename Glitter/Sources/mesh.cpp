@@ -38,6 +38,4 @@ float* Mesh::getVertices() {
     return faces; 
 }
 
-
-
 }

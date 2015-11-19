@@ -13,6 +13,7 @@
 #include <cstdlib>
 #include <chrono>
 #include <ctime>
+#include <cmath>
 
 #include <string>
 
@@ -75,19 +76,21 @@ namespace Gravel
 
         auto t_start = std::chrono::high_resolution_clock::now();
 
-        glm::mat4 view = glm::lookAt(
-                glm::vec3(1.2f, 1.2f, 1.2f),
+        view = glm::lookAt(
+                glm::vec3(1.2f, 0.0f, 0.0f),
                 glm::vec3(0.0f, 0.0f, 0.0f),
                 glm::vec3(0.0f, 0.0f, 1.0f)
                 );
+
         shader->bind("view", view);
 
         glm::mat4 proj = glm::perspective(glm::radians(45.0f), 800.0f / 600.0f, 1.0f, 10.0f);
         shader->bind("proj",proj);
+
+        glfwSetInputMode(mWindow, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
  
         while (glfwWindowShouldClose(mWindow) == false) {
-            if (glfwGetKey(mWindow, GLFW_KEY_ESCAPE) == GLFW_PRESS)
-                glfwSetWindowShouldClose(mWindow, true);
+            getKeyPress();
 
             // Background Fill Color
             glClearColor(0.25f, 0.25f, 0.25f, 1.0f);
@@ -114,6 +117,35 @@ namespace Gravel
             glfwSwapBuffers(mWindow);
             glfwPollEvents();
         }   glfwTerminate();
+    }
+
+    void Engine::getKeyPress() {
+        double xpos, ypos;
+
+        glfwGetCursorPos(mWindow, &xpos, &ypos);
+
+        printf("Mouse pos: x: %f, y: %f\n", xpos, ypos);
+        printf("Mouse rot: x: %f, y: %f\n", sin(xpos),cos(ypos));
+
+        if (glfwGetKey(mWindow, GLFW_KEY_ESCAPE) == GLFW_PRESS)
+            glfwSetWindowShouldClose(mWindow, true);
+        if(glfwGetKey(mWindow, GLFW_KEY_W) == GLFW_PRESS) {
+            view = glm::translate( view, glm::vec3(0.1f,0.0f,0.0f));
+        }
+        if(glfwGetKey(mWindow, GLFW_KEY_A) == GLFW_PRESS) {
+            view = glm::translate( view, glm::vec3(0.0f,0.1f,0.0f));
+        }
+        if(glfwGetKey(mWindow, GLFW_KEY_S) == GLFW_PRESS) {
+            view = glm::translate( view, glm::vec3(-0.1f,0.0f,0.0f));
+        }
+        if(glfwGetKey(mWindow, GLFW_KEY_D) == GLFW_PRESS) {
+            view = glm::translate( view, glm::vec3(0.0f,-0.1f,0.0f));
+        }
+
+
+        glm::mat4 mouseView = glm::rotate(view, (float)xpos*.05f, glm::vec3(0.0f, 0.0f, 1.0f)); 
+        
+        shader->bind("view", mouseView);
     }
 
 

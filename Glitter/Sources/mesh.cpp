@@ -22,6 +22,8 @@ float* Mesh::getVertices() {
     aiMesh* mesh = scene->mMeshes[0];
 
     unsigned int numVertices = mesh->mNumVertices;
+    mSize = mesh->mNumVertices;
+
 
     aiVector3D* vertices = mesh->mVertices; 
     printf("Retrieved %u vertices\n", numVertices);
@@ -34,8 +36,13 @@ float* Mesh::getVertices() {
         faces[j + 2] = vertices[i].z;
          printf("x: %f, y: %f, z: %f\n", vertices[i].x, vertices[i].y, vertices[i].z);
     }
+
     
     return faces; 
+}
+
+unsigned int Mesh::getSize() {
+    return mSize; 
 }
 
 }

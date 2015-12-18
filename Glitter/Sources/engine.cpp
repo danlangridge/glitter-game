@@ -19,23 +19,26 @@
 
 namespace Gravel
 {
+    //Vertex Data 
+    const float triangle[] = {
+        0.0f, 0.5f,
+        0.5f, -0.5f,
+        -0.5f, -0.5f
+    };
 
+    void renderObject(GLuint vertexBuffer) {
+        glDrawArrays(GL_TRIANGLES, 0, 2436);
+    }
 
-    int uploadTestMesh() {
+    void Engine::uploadMesh(std::string filename) {
 
-        Mesh box = Mesh("/home/dan/workspace/glitter-game/models/box.obj");
+        Mesh* mesh = new Mesh(filename);
+        drawables.push_back(mesh);
 
         GLuint vao;
         glGenVertexArrays(1, &vao);
 
         glBindVertexArray(vao);
-
-        //Vertex Data 
-        float triangle[] = {
-            0.0f, 0.5f,
-            0.5f, -0.5f,
-            -0.5f, -0.5f
-        };
 
         //Grab memory using opengl (vertex Buffer Object)
         GLuint vbo;
@@ -44,10 +47,10 @@ namespace Gravel
         //Tie memory to active datatype 
         glBindBuffer(GL_ARRAY_BUFFER, vbo);
 
-        //Upload data
-        glBufferData(GL_ARRAY_BUFFER, 36*3*sizeof(float), box.getVertices(), GL_STATIC_DRAW);
+        const unsigned int verticesPerFace = 3;
 
-        return 0;
+        //Upload data
+        glBufferData(GL_ARRAY_BUFFER, mesh->getSize()*sizeof(float)*verticesPerFace, mesh->getVertices(), GL_STATIC_DRAW);
     }
 
     Engine::Engine() {
@@ -68,7 +71,10 @@ namespace Gravel
         fprintf(stderr, "OpenGL %s\nGLSL %s\n", glGetString(GL_VERSION), glGetString(GL_SHADING_LANGUAGE_VERSION));
         glEnable(GL_DEPTH_TEST);
 
-        uploadTestMesh();
+        drawables = std::vector<Mesh*>();
+        uploadMesh("/home/dan/workspace/glitter-game/models/box.obj");
+        uploadMesh("/home/dan/workspace/glitter-game/models/robot_man.obj");
+        
         setupShaders(); 
     }
 
@@ -104,14 +110,14 @@ namespace Gravel
                     model,
                     time * glm::radians(180.0f), 
                     glm::vec3(0.0f, 0.0f, 1.0f)
-                    ) * glm::scale(model, glm::vec3(0.5f,0.5f,0.5f)) ;
+                    ) * glm::scale(model, glm::vec3(0.5f,0.5f,0.5f));
 
             //glm::vec4 result = model * glm::vec4(1.0f, 0.0f, 0.0f, 1.0f);
             //printf("%f, %f, %f,\n", result.x, result.y, result.z);
             
             shader->bind("model", model);
              
-            glDrawArrays(GL_TRIANGLES, 0, 36);
+            glDrawArrays(GL_TRIANGLES, 0, 2436);
 
             // Flip Buffers and Draw
             glfwSwapBuffers(mWindow);
@@ -124,8 +130,8 @@ namespace Gravel
 
         glfwGetCursorPos(mWindow, &xpos, &ypos);
 
-        printf("Mouse pos: x: %f, y: %f\n", xpos, ypos);
-        printf("Mouse rot: x: %f, y: %f\n", sin(xpos),cos(ypos));
+        //printf("Mouse pos: x: %f, y: %f\n", xpos, ypos);
+        //printf("Mouse rot: x: %f, y: %f\n", sin(xpos),cos(ypos));
 
         if (glfwGetKey(mWindow, GLFW_KEY_ESCAPE) == GLFW_PRESS)
             glfwSetWindowShouldClose(mWindow, true);
@@ -142,7 +148,6 @@ namespace Gravel
             view = glm::translate( view, glm::vec3(0.0f,-0.1f,0.0f));
         }
 
-
         glm::mat4 mouseView = glm::rotate(view, (float)xpos*.05f, glm::vec3(0.0f, 0.0f, 1.0f)); 
         
         shader->bind("view", mouseView);
@@ -155,6 +160,8 @@ namespace Gravel
         std::string fragmentSourceFile = "/home/dan/workspace/glitter-game/Glitter/Shaders/shader.frag";
 
         shader = new Shader(vertexSourceFile, fragmentSourceFile);
+        shader->bindAttributeArray("position");
     }
+    
 
 }

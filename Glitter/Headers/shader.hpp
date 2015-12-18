@@ -25,10 +25,9 @@ class Shader {
             else bind(location, std::forward<T>(value));
             return *this;
         }
+        void bindAttributeArray(std::string attribute);
         void setupBinds();
         void setupUniforms();
-        void setupAttributes();
-        GLuint retrieve(std::string filename);
 
     private:
         GLuint mProgram;

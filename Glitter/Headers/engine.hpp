@@ -8,6 +8,7 @@
 
 #include "shader.hpp"
 #include "mesh.hpp"
+#include <vector>
 
 namespace Gravel {
 
@@ -20,10 +21,13 @@ namespace Gravel {
         private:
             void setupShaders();
             void getKeyPress();
+            void uploadMesh(std::string filename);
 
             Shader* shader;
             GLFWwindow* mWindow;
             GLuint uniforms;
             glm::mat4 view;
+            std::vector<Mesh*> drawables;
+            
     };
 }

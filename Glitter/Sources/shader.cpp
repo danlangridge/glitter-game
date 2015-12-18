@@ -10,7 +10,6 @@ Shader::Shader(std::string vertexShader, std::string fragmentShader) {
     setupBinds(); 
     glLinkProgram(mProgram);
     glUseProgram(mProgram);
-    setupAttributes();
 }
 
 void Shader::get(std::string filename) {
@@ -81,14 +80,10 @@ void Shader::setupBinds() {
     glBindFragDataLocation(mProgram, 0, "outColor");
 }
 
-void Shader::setupAttributes() {
-
-        GLint posAttrib = glGetAttribLocation(mProgram, "position");
+void Shader::bindAttributeArray(std::string attribute) {
+        GLint posAttrib = glGetAttribLocation(mProgram, attribute.c_str());
         glEnableVertexAttribArray(posAttrib);
         glVertexAttribPointer(posAttrib, 3, GL_FLOAT, GL_FALSE, 0, 0);
 
-}
-
-GLuint Shader::retrieve(std::string filename) {
 
 }

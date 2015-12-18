@@ -11,8 +11,10 @@ class Mesh {
     public:
         Mesh(std::string filename);
         float* getVertices();
+        unsigned int getSize();
     private:
         Assimp::Importer mAssetImporter;
+        unsigned int mSize;
 };
 
 }

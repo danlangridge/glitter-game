@@ -79,11 +79,3 @@ void Shader::bind(unsigned int location, glm::mat4 const & matrix) {
 void Shader::setupBinds() {
     glBindFragDataLocation(mProgram, 0, "outColor");
 }
-
-void Shader::bindAttributeArray(std::string attribute) {
-        GLint posAttrib = glGetAttribLocation(mProgram, attribute.c_str());
-        glEnableVertexAttribArray(posAttrib);
-        glVertexAttribPointer(posAttrib, 3, GL_FLOAT, GL_FALSE, 0, 0);
-
-
-}

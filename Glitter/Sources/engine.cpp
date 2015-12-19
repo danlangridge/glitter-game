@@ -26,7 +26,9 @@ namespace Gravel
         -0.5f, -0.5f
     };
 
-    void renderObject(GLuint vertexBuffer) {
+    void Engine::renderObject(GLuint vbo) {
+        glBindBuffer(GL_ARRAY_BUFFER, vbo);
+        glVertexAttribPointer(positionAttribute, 3, GL_FLOAT, GL_FALSE, 0, 0);
         glDrawArrays(GL_TRIANGLES, 0, 2436);
     }
 
@@ -51,6 +53,7 @@ namespace Gravel
 
         //Upload data
         glBufferData(GL_ARRAY_BUFFER, mesh->getSize()*sizeof(float)*verticesPerFace, mesh->getVertices(), GL_STATIC_DRAW);
+       buffers.push_back(vbo); 
     }
 
     Engine::Engine() {
@@ -116,8 +119,10 @@ namespace Gravel
             //printf("%f, %f, %f,\n", result.x, result.y, result.z);
             
             shader->bind("model", model);
-             
-            glDrawArrays(GL_TRIANGLES, 0, 2436);
+            
+            renderObject(buffers[0]);
+            renderObject(buffers[1]);
+            //glDrawArrays(GL_TRIANGLES, 0, 2436);
 
             // Flip Buffers and Draw
             glfwSwapBuffers(mWindow);
@@ -160,7 +165,12 @@ namespace Gravel
         std::string fragmentSourceFile = "/home/dan/workspace/glitter-game/Glitter/Shaders/shader.frag";
 
         shader = new Shader(vertexSourceFile, fragmentSourceFile);
-        shader->bindAttributeArray("position");
+        std::string attribute = "position";
+        GLint posAttrib = glGetAttribLocation(shader->mProgram, attribute.c_str());
+        glEnableVertexAttribArray(posAttrib);
+        glVertexAttribPointer(posAttrib, 3, GL_FLOAT, GL_FALSE, 0, 0);
+
+        positionAttribute = posAttrib;
     }
     
 

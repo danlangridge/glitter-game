@@ -25,12 +25,11 @@ class Shader {
             else bind(location, std::forward<T>(value));
             return *this;
         }
-        void bindAttributeArray(std::string attribute);
+        
         void setupBinds();
         void setupUniforms();
-
-    private:
         GLuint mProgram;
+    private:
         GLuint mVertexShader;
         GLuint mFragmentShader;
 };

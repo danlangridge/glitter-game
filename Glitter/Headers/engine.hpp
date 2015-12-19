@@ -23,11 +23,15 @@ namespace Gravel {
             void getKeyPress();
             void uploadMesh(std::string filename);
 
+            void renderObject(GLuint vbo);
+
             Shader* shader;
             GLFWwindow* mWindow;
             GLuint uniforms;
             glm::mat4 view;
             std::vector<Mesh*> drawables;
-            
+
+            std::vector<GLuint> buffers;            
+            GLint positionAttribute;            
     };
 }

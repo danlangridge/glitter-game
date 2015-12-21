@@ -24,6 +24,10 @@ namespace Gravel {
             void uploadMesh(std::string filename);
 
             void renderObject(GLuint vbo);
+            void renderAxis();
+            void uploadAxis();
+            void uploadAxis(const float axisLine[]);
+            void renderLine(GLuint vbo);
 
             Shader* shader;
             GLFWwindow* mWindow;
@@ -32,6 +36,9 @@ namespace Gravel {
             std::vector<Mesh*> drawables;
 
             std::vector<GLuint> buffers;            
-            GLint positionAttribute;            
+            GLint positionAttribute;
+
+            std::vector<GLuint> axis; 
+
     };
 }

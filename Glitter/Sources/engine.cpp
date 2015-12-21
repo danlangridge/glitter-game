@@ -26,10 +26,61 @@ namespace Gravel
         -0.5f, -0.5f
     };
 
+    const float Xaxis[] = {
+        -0.5, 0.0, 0.0,
+        0.5, 0.0, 0.0
+    };
+    
+    const float Yaxis[] = {
+        0.0, -0.5, 0.0,
+        0.0, 0.5, 0.0
+    };
+    
+    const float Zaxis[] = {
+        0.0, 0.0, -0.5,
+        0.0, 0.0, 0.5
+    };
+
     void Engine::renderObject(GLuint vbo) {
         glBindBuffer(GL_ARRAY_BUFFER, vbo);
         glVertexAttribPointer(positionAttribute, 3, GL_FLOAT, GL_FALSE, 0, 0);
         glDrawArrays(GL_TRIANGLES, 0, 2436);
+    }
+
+    void Engine::renderAxis() {
+        renderLine(axis[0]);
+        renderLine(axis[1]);
+        renderLine(axis[2]); 
+    }
+
+    void Engine::renderLine(GLuint vbo) {
+        glBindBuffer(GL_ARRAY_BUFFER, vbo);
+        glVertexAttribPointer(positionAttribute, 3, GL_FLOAT, GL_FALSE, 0, 0);
+        glDrawArrays(GL_LINES, 0, 2436);
+    }
+    
+    void Engine::uploadAxis() {
+        uploadAxis(Xaxis);
+        uploadAxis(Yaxis);
+        uploadAxis(Zaxis);
+    }
+
+    void Engine::uploadAxis(const float axisLine[]) {
+        
+        GLuint vao;
+        glGenVertexArrays(1, &vao);
+
+        glBindVertexArray(vao);
+        
+        GLuint vbo;
+        glGenBuffers(1, &vbo);
+
+        //Tie memory to active datatype 
+        glBindBuffer(GL_ARRAY_BUFFER, vbo);
+
+        //Upload data
+        glBufferData(GL_ARRAY_BUFFER, 6, axisLine, GL_STATIC_DRAW);
+       axis.push_back(vbo);  
     }
 
     void Engine::uploadMesh(std::string filename) {
@@ -77,6 +128,7 @@ namespace Gravel
         drawables = std::vector<Mesh*>();
         uploadMesh("/home/dan/workspace/glitter-game/models/box.obj");
         uploadMesh("/home/dan/workspace/glitter-game/models/robot_man.obj");
+        uploadAxis();
         
         setupShaders(); 
     }
@@ -93,7 +145,7 @@ namespace Gravel
 
         shader->bind("view", view);
 
-        glm::mat4 proj = glm::perspective(glm::radians(45.0f), 800.0f / 600.0f, 1.0f, 10.0f);
+        glm::mat4 proj = glm::perspective(glm::radians(45.0f), 800.0f / 600.0f, 1.0f, 1000.0f);
         shader->bind("proj",proj);
 
         glfwSetInputMode(mWindow, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
@@ -119,9 +171,22 @@ namespace Gravel
             //printf("%f, %f, %f,\n", result.x, result.y, result.z);
             
             shader->bind("model", model);
-            
+            renderAxis();
+                        
             renderObject(buffers[0]);
-            renderObject(buffers[1]);
+            model = glm::rotate(
+                    model,
+                    time * glm::radians(180.0f), 
+                    glm::vec3(0.0f, 0.0f, 2.0f)
+                    ) * glm::scale(model, glm::vec3(0.5f,0.5f,0.5f));
+            shader->bind("model", model);
+            
+            model = glm::mat4();
+            model = glm::translate(model, glm::vec3(-3.0f,0.0f,3.0f));
+            shader->bind("model", model);
+            renderObject(buffers[1]); 
+             
+
             //glDrawArrays(GL_TRIANGLES, 0, 2436);
 
             // Flip Buffers and Draw
